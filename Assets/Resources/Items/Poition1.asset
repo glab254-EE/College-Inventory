@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6061be2f46862814a91e63a31f353671, type: 3}
+  m_Name: Poition1
+  m_EditorClassIdentifier: 
+  <sprite>k__BackingField: {fileID: 21300000, guid: c0fcbd8eb22cf1f41ae69f97e1b4af8a, type: 3}
+  <rarity>k__BackingField: 1
+  <Itemname>k__BackingField: Mixed Potion
+  <ItemType>k__BackingField: Consumable
+  <cost>k__BackingField: 55
+  <attributes>k__BackingField:
+  - Name: Healing
+    Ammount: 25
+  - Name: Temp. Defence
+    Ammount: 10
