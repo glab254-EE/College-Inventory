@@ -7,14 +7,14 @@ using UnityEngine.UI;
 
 public class InventorySys : MonoBehaviour
 {
-    [SerializeField] protected int QueueCoun = 4;
-    [SerializeField] protected int Inv_Size = 48;
-    [SerializeField] protected int Inv_Max_Size = 48;
-    [SerializeField] protected GameObject Prefab;
-    [SerializeField] protected List<GameObject> Slots;
+    [SerializeField] private int QueueCoun = 4;
+    [SerializeField] private int Inv_Size = 48;
+    [SerializeField] private int Inv_Max_Size = 48;
+    [SerializeField] private GameObject Prefab;
+    [SerializeField] private List<GameObject> Slots;
     [SerializeField] private GameObject itempref;
     [SerializeField] private Button chestbutton;
-    [SerializeField] protected Queue<UnityEngine.Object> Spawnqueue = new Queue<UnityEngine.Object>();
+    [SerializeField] private Queue<UnityEngine.Object> Spawnqueue = new Queue<UnityEngine.Object>();
     private List<GameObject> ininventory = new List<GameObject>();
     private int takenspots = 0;
     private void AddRandItem(Transform Parent)
@@ -89,7 +89,7 @@ public class InventorySys : MonoBehaviour
     }
 
 }
-public enum rarity {
+public enum Rarity {
     common=0,
     uncommon=1,
     rare=2,

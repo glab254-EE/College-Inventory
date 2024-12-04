@@ -8,11 +8,11 @@ using UnityEngine.UI;
 
 public class PreviewScript : MonoBehaviour
 {
-    [SerializeField] protected Image Itemimge;
-    [SerializeField] protected TMP_Text ItemName;
-    [SerializeField] protected TMP_Text ItemClass;
-    [SerializeField] protected TMP_Text ItemAttributes;
-    [SerializeField] protected TMP_Text ItemCost;
+    [SerializeField] private Image Itemimge;
+    [SerializeField] private TMP_Text ItemName;
+    [SerializeField] private TMP_Text ItemClass;
+    [SerializeField] private TMP_Text ItemAttributes;
+    [SerializeField] private TMP_Text ItemCost;
     InventoryItem currentitem = null;
 
     private void UpdateGUI()

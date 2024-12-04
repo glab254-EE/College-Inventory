@@ -6,7 +6,7 @@ using UnityEngine;
 public class Item : ScriptableObject
 {
     [field:SerializeField] public Sprite sprite { get; private set; }
-    [field: SerializeField] public rarity rarity { get; private set; } = rarity.common;
+    [field: SerializeField] public Rarity rarity { get; private set; } = Rarity.common;
     [field: SerializeField] public string Itemname { get; private set; }
     [field: SerializeField] public string ItemType { get; private set; }
     [field: SerializeField] public int cost { get; private set; }

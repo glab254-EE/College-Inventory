@@ -10,7 +10,7 @@ public class DragableItem : MonoBehaviour , IBeginDragHandler,IDragHandler, IEnd
     protected Image image;
     public void OnBeginDrag(PointerEventData eventData)
     {
-        image = GetComponent<Image>();
+        if(image==null) image = GetComponent<Image>();
         New_Parent = transform.parent;
         transform.SetParent(transform.root);
         transform.SetAsLastSibling();
