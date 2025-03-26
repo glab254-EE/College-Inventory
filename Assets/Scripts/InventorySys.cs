@@ -7,9 +7,10 @@ using UnityEngine.UI;
 
 public class InventorySys : MonoBehaviour
 {
+    public static InventorySys instance;
     [SerializeField] private int QueueCoun = 4;
-    [SerializeField] private int Inv_Size = 48;
-    [SerializeField] private int Inv_Max_Size = 48;
+    [SerializeField] private int Inv_Size = 28;
+    [SerializeField] private int Inv_Max_Size = 28;
     [SerializeField] private GameObject Prefab;
     [SerializeField] private List<GameObject> Slots;
     [SerializeField] private GameObject itempref;
@@ -17,7 +18,7 @@ public class InventorySys : MonoBehaviour
     [SerializeField] private Queue<UnityEngine.Object> Spawnqueue = new Queue<UnityEngine.Object>();
     private List<GameObject> ininventory = new List<GameObject>();
     private int takenspots = 0;
-    private void AddRandItem(Transform Parent)
+    internal void AddRandItem(Transform Parent)
     {
         if (itempref != null && takenspots < Inv_Size)
         {
@@ -43,7 +44,7 @@ public class InventorySys : MonoBehaviour
             takenspots = ininventory.Count;
         }
     }
-    private void OnChestPress()
+    internal void OnChestPress()
     {
         takenspots = ininventory.Count;
         if (takenspots < Inv_Size)
@@ -58,21 +59,33 @@ public class InventorySys : MonoBehaviour
             AddRandItem(Randslot.transform);
         }
     }
+    private void InventorySetUp()
+    {
+        Slots = new List<GameObject>();
+        for (int i = 0; i < Inv_Size; i++)
+        {
+            GameObject slot = Instantiate(Prefab, transform);
+            Slots.Add(slot);
+            slot.name = i.ToString();
+        }
+        int raandompos = UnityEngine.Random.Range(0, Slots.Count);
+        GameObject Randslot = Slots[raandompos];
+        AddRandItem(Randslot.transform);
+    }
+    void Awake()
+    {
+        if (instance != null){
+            Destroy(gameObject);
+        }
+        instance = this;
+        
+    }
     void Start()
     {
-        if (Inv_Size > Inv_Max_Size) Inv_Size = Inv_Max_Size;
+        if (Inv_Size > Inv_Max_Size) Inv_Size = Inv_Max_Size; // clamp
         if (Prefab != null)
         {
-            Slots = new List<GameObject>();
-            for (int i = 0; i < Inv_Size; i++)
-            {
-                GameObject slot = Instantiate(Prefab, transform);
-                Slots.Add(slot);
-                slot.name = i.ToString();
-            }
-            int raandompos = UnityEngine.Random.Range(0, Slots.Count);
-            GameObject Randslot = Slots[raandompos];
-            AddRandItem(Randslot.transform);
+            InventorySetUp();
         }
         chestbutton.onClick.AddListener(OnChestPress);
     }
