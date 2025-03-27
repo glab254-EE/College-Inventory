@@ -101,5 +101,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99dfbebfafb529445a0f366c34110720, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentitem: {fileID: 11400000, guid: 58ca968ce2c567943978cf552792a942, type: 2}
-  image: {fileID: 1208763299537781371}
+  <currentitem>k__BackingField: {fileID: 0}
+  <image>k__BackingField: {fileID: 1208763299537781371}

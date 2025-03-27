@@ -19,6 +19,6 @@ MonoBehaviour:
   <cost>k__BackingField: 255
   <attributes>k__BackingField:
   - Name: Damage
-    Ammount: 45
+    Ammount: 50
   - Name: Damage To Zombies
-    Ammount: 55
+    Ammount: 75

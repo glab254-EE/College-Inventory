@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class DragableItem : MonoBehaviour , IBeginDragHandler,IDragHandler, IEndDragHandler
 {
     public Transform New_Parent { get; internal set; }
-    protected Image image;
+    internal Image image;
     public void OnBeginDrag(PointerEventData eventData)
     {
         if(image==null) image = GetComponent<Image>();

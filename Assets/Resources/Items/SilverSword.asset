@@ -20,3 +20,5 @@ MonoBehaviour:
   <attributes>k__BackingField:
   - Name: Damage
     Ammount: 45
+  - Name: Damage To Vampires
+    Ammount: 5
