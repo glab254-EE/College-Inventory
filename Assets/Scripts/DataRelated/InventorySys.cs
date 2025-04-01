@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class InventorySys : MonoBehaviour
 {
     public static InventorySys instance;
+    [SerializeField] private Transform inventoryRootParent;
     [SerializeField] private int Inv_Size = 28;
     [SerializeField] private int Inv_Max_Size = 28;
     [SerializeField] private int MaxLineCount = 5;
@@ -36,9 +37,13 @@ public class InventorySys : MonoBehaviour
             UnityEngine.Object @object = items[randomnum];
             GameObject newobject = Instantiate(itempref, Parent);
             ininventory.Add(newobject);
-            if (@object != null && @object.GetType() == typeof(Item) && newobject.TryGetComponent<InventoryItem>(out InventoryItem item) == true)
+            if (@object != null && (@object.GetType().Equals(typeof(Item))||@object.GetType().Equals(typeof(VoidChest))) && newobject.TryGetComponent<InventoryItem>(out InventoryItem item) == true)
             {
-                Item item1 = @object as Item;
+                Item item1 = (Item)@object;
+                if (@object.GetType().Equals(typeof(VoidChest)))
+                {
+                    item1 = (VoidChest)@object;
+                }
                 item.currentitem = item1;
                 _ItemInSlots[position.x,position.y] = new(item1.name,new Vector2Int(position.x,position.y));
             }
@@ -67,15 +72,19 @@ public class InventorySys : MonoBehaviour
         takenspots = ininventory.Count;
         if (takenspots < Inv_Size)
         {
-            GameObject Randslot;
-            do
-            {
-                int raandompos = UnityEngine.Random.Range(0, SlotList.Count);
-                Randslot = SlotList[raandompos];
-            }
-            while (Randslot.transform.childCount > 0);
+            GameObject Randslot = null;
             int randomx = UnityEngine.Random.Range(0,_slots.GetLength(0));
             int randomy = UnityEngine.Random.Range(0,_slots.GetLength(1));
+            do
+            {
+                randomx = UnityEngine.Random.Range(0,_slots.GetLength(0));
+                randomy = UnityEngine.Random.Range(0,_slots.GetLength(1));
+                if (_slots.GetLength(0) > randomx && _slots.GetLength(1) > randomy && _slots[randomx,randomy] != null)
+                {
+                    Randslot = _slots[randomx,randomy];
+                }
+            }
+            while (Randslot==null||Randslot.transform.childCount > 0);
             AddItem(new Vector2Int(randomx,randomy));
         }
     }
@@ -84,16 +93,73 @@ public class InventorySys : MonoBehaviour
         
         if (takenspots < Inv_Size)
         {
-            GameObject Randslot;
-            do
-            {
-                int raandompos = UnityEngine.Random.Range(0, SlotList.Count);
-                Randslot = SlotList[raandompos];
-            }
-            while (Randslot.transform.childCount > 0);
+        
+            GameObject Randslot = null;
             int randomx = UnityEngine.Random.Range(0,_slots.GetLength(0));
             int randomy = UnityEngine.Random.Range(0,_slots.GetLength(1));
+            do
+            {
+                randomx = UnityEngine.Random.Range(0,_slots.GetLength(0));
+                randomy = UnityEngine.Random.Range(0,_slots.GetLength(1));
+                if (_slots.GetLength(0) > randomx && _slots.GetLength(1) > randomy && _slots[randomx,randomy] != null)
+                {
+                    Randslot = _slots[randomx,randomy];
+                }
+            }
+            while (Randslot==null||Randslot.transform.childCount > 0);
             AddItem(new Vector2Int(randomx,randomy),item);
+        }
+    }
+    internal void ItemAction(Item item)
+    {
+        if (item.GetType().Equals(typeof(VoidChest)))
+        {
+            VoidChest chest = item as VoidChest;
+            int max = ininventory.Count();
+            int toRemove = Mathf.RoundToInt(max*chest.RemovedItems);
+            int removed = 0;
+            do
+            {
+                GameObject randomItem = ininventory[UnityEngine.Random.Range(0,ininventory.Count)];
+                ininventory.Remove(randomItem);
+                Destroy(randomItem);
+                removed++;
+            }while(removed<toRemove);
+        }
+    }
+    private void InventoryCheck()
+    {
+        for (int i = 0; i < ininventory.Count; i++)
+        {
+            GameObject go = ininventory[i];
+            if (go.IsDestroyed() == true || go == null)
+            {
+                ininventory.RemoveAt(i);
+            }
+        }
+        for (int x=0;x<_slots.GetLength(0);x++)
+        {
+            for (int y=0;y<_slots.GetLength(1);y++)
+            {
+                GameObject slot = _slots[x,y];
+                if (slot!= null)
+                {
+                    if (slot.transform.childCount>0&&_ItemInSlots[x,y] == null) // detects missing child inside table.
+                    {
+                        Transform child = slot.transform.GetChild(0);
+                        if (child.TryGetComponent<InventoryItem>(out InventoryItem item) && item.currentitem != null)
+                        {
+                            Debug.Log("Found missing item!");
+                            _ItemInSlots.SetValue(new SavableItem(item.currentitem.name,new Vector2Int(x,y)),x,y);
+                        }
+                    } 
+                    else if (slot.transform.childCount <= 0 && _ItemInSlots[x,y] != null) // detects 'ghost' item
+                    {
+                        Debug.Log("Found ghost item!");
+                        _ItemInSlots[x,y] = null;
+                    }
+                }
+            }
         }
     }
     private void InventorySetUp()
@@ -103,7 +169,7 @@ public class InventorySys : MonoBehaviour
         int currentLine = 0;
         for (int i = 0; i < Inv_Size; i++)
         {
-            GameObject slot = Instantiate(SlotPrefab, transform);
+            GameObject slot = Instantiate(SlotPrefab, inventoryRootParent);
             SlotList.Add(slot);
             slot.name = i.ToString();
             if (_slots.GetLength(1) > currentLine && _slots.GetLength(0) > linecount)
@@ -157,22 +223,18 @@ public class InventorySys : MonoBehaviour
         }
     }
     private void FixedUpdate()
-    {// checking for deleted items
-        for (int i = 0; i < ininventory.Count; i++)
-        {
-            GameObject go = ininventory[i];
-            if (go.IsDestroyed() == true || go == null)
-            {
-                ininventory.RemoveAt(i);
-            }
-        }
+    {
+        InventoryCheck();
     }
     void OnApplicationQuit()
     {
         SavableInventory ListToSave = new();
         foreach (SavableItem item in _ItemInSlots)
         {
-            if (item != null)ListToSave.Items.Add(item);
+            if (item != null)
+            {
+                ListToSave.Items.Add(item);
+            }
         }
         DataBase.instance.Save(ListToSave);
     }

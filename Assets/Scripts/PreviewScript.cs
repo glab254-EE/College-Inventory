@@ -17,7 +17,7 @@ public class PreviewScript : MonoBehaviour
 
     private void UpdateGUI()
     {
-        if (currentitem != null)
+        if (currentitem != null && currentitem.currentitem != null)
         {
             Item item = currentitem.currentitem;
             Itemimge.sprite = currentitem.image.sprite;
